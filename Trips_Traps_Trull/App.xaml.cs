@@ -10,7 +10,7 @@ namespace Trips_Traps_Trull
         {
             InitializeComponent();
 
-            MainPage = new TicTacToe();
+            MainPage = new Main();
         }
 
         protected override void OnStart()
