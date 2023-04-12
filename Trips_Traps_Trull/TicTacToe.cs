@@ -43,7 +43,7 @@ namespace Trips_Traps_Trull
 
         int mode = 0;
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
+        {           
             Image image = (Image)sender;
             if (image.TabIndex != 1 && mode == 0)
             {
@@ -54,7 +54,7 @@ namespace Trips_Traps_Trull
                 {
                     for (int x = 0; x < elements.GetLength(0); x++)
                     {
-                        if (elements[y,x].image == image)
+                        if (elements[y, x].image == image)
                         {
                             elements[y, x].value = 'x';                        
                         }
@@ -85,36 +85,34 @@ namespace Trips_Traps_Trull
 
         private async void CheckWinner(char symbol) 
         {
-            int x = elements.GetLength(0);
-            int y = elements.GetLength(1);
-            
+            int length = elements.GetLength(0);            
             string diagonalLr = "";
             string diagonalRl = "";
-            for (int i = 0; i < y; i++)
+            for (int i = 0; i < length; i++)
             {
                 string vertical = "";
                 string horizontal = "";
                 diagonalLr += elements[i, i].value;
-                diagonalRl += elements[i, y - 1 - i].value;
-                for (int j = 0; j < x; j++)
+                diagonalRl += elements[i, length - 1 - i].value;
+                for (int j = 0; j < length; j++)
                 {
                     vertical += elements[i, j].value;
                     horizontal += elements[j, i].value;
                 }
 
-                if (vertical.Count(f => (f == symbol)) == x && vertical.Length == y)
+                if (vertical.Count(f => (f == symbol)) == length && vertical.Length == length)
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                 }
-                if (horizontal.Count(f => (f == symbol)) == x && horizontal.Length == y)
+                else if (horizontal.Count(f => (f == symbol)) == length && horizontal.Length == length)
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                 }
-                if (diagonalLr.Count(f => (f == symbol)) == x && diagonalLr.Length == y)
+                else if (diagonalLr.Count(f => (f == symbol)) == length && diagonalLr.Length == length)
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                 }
-                if (diagonalRl.Count(f => (f == symbol)) == x && diagonalRl.Length == y)
+                else if (diagonalRl.Count(f => (f == symbol)) == length && diagonalRl.Length == length)
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                 }
