@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xamarin.Essentials;
@@ -27,7 +28,7 @@ namespace Trips_Traps_Trull
             buttonX = new Button
             {
                 Text = "X",
-                FontSize = 24,
+                FontSize = 38,
                 WidthRequest = 100,
                 HeightRequest = 30,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -40,7 +41,7 @@ namespace Trips_Traps_Trull
             buttonO = new Button
             {
                 Text = "O",
-                FontSize = 24,
+                FontSize = 28,
                 WidthRequest = 100,
                 HeightRequest = 30,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -76,6 +77,7 @@ namespace Trips_Traps_Trull
                     {
                         image.BackgroundColor = Color.DarkGray;
                         frame.BackgroundColor = Color.DarkGray;
+                        buttonStack.BackgroundColor = Color.DarkGray;
                     }
                     image.GestureRecognizers.Add(tapGestureRecognizer);
                     images.Add(image);
@@ -152,6 +154,7 @@ namespace Trips_Traps_Trull
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                     var answer = await DisplayAlert("!!!", $"Kas alustada mängu uuesti?", "jah", "ei");
+                    SaveFile(symbol);
                     if (answer)
                     {
                         ResetGame();
@@ -161,6 +164,7 @@ namespace Trips_Traps_Trull
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                     var answer = await DisplayAlert("!!!", $"Kas alustada mängu uuesti?", "jah", "ei");
+                    SaveFile(symbol);
                     if (answer)
                     {
                         ResetGame();
@@ -170,6 +174,7 @@ namespace Trips_Traps_Trull
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                     var answer = await DisplayAlert("!!!", $"Kas alustada mängu uuesti?", "jah", "ei");
+                    SaveFile(symbol);
                     if (answer)
                     {
                         ResetGame();
@@ -179,6 +184,7 @@ namespace Trips_Traps_Trull
                 {
                     await DisplayAlert("Palju õnne!", $"Võitjad: {symbol}", "ok");
                     var answer = await DisplayAlert("!!!", $"Kas alustada mängu uuesti?", "jah", "ei");
+                    SaveFile(symbol);
                     if (answer)
                     {
                         ResetGame();
@@ -207,6 +213,22 @@ namespace Trips_Traps_Trull
             buttonX.IsEnabled = true;
         }
 
+        public void SaveFile(char symbol) 
+        {
+            string fileName = "Score";
+            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            DateTime dateTime= DateTime.Now;
+            if (File.Exists(Path.Combine(folderPath, fileName)))
+            {
+                File.AppendAllText(Path.Combine(folderPath, fileName), $"Võitis: {symbol} | {dateTime} \n");
+            }
+            else
+            {
+                File.WriteAllText(Path.Combine(folderPath, fileName), $"Võitis: {symbol} | {dateTime} \n");
+            }
+        }
+
+
         public class Element
         {
             public int x;
@@ -222,6 +244,7 @@ namespace Trips_Traps_Trull
             }
             
         }
+        
 
     }
 }
