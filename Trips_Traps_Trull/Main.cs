@@ -10,6 +10,9 @@ namespace Trips_Traps_Trull
 {
     public class Main : ContentPage
     {
+        List<string> buttonsText = new List<string> { "Võitjate nimekiri", "Muuda teemat", "Botiga mängimine" };
+        
+
         public Main()
         {
             StackLayout stackLayout = new StackLayout {};
@@ -19,7 +22,7 @@ namespace Trips_Traps_Trull
                 FontSize = 30,
                 FontAttributes= FontAttributes.Bold,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand
+                VerticalOptions = LayoutOptions.CenterAndExpand,
             };
 
             Label label2 = new Label { Text = "Valige välja suurus:", FontSize = 20, Margin = 10 };
@@ -49,47 +52,77 @@ namespace Trips_Traps_Trull
                 stackLayout.Children.Add(button);
             }
 
-            Button themeButton = new Button
+            for (int i = 0; i < buttonsText.Count(); i++)
             {
-                Text = "Muuda teemat",
-                FontSize = 16,
-                WidthRequest = 200,
-                HeightRequest = 100,
-                BorderWidth = 3,
-                CornerRadius = 8,
-                BorderColor = Color.Black,
-                BackgroundColor = Color.Coral,
-                FontAttributes = FontAttributes.Bold,
-                Margin = 10,
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.CenterAndExpand
-            };
-            Button winnersListButton = new Button
-            {
-                Text = "Võitjate nimekiri",
-                FontSize = 16,
-                WidthRequest = 200,
-                HeightRequest = 100,
-                BorderWidth = 3,
-                CornerRadius = 8,
-                BorderColor = Color.Black,
-                BackgroundColor = Color.Coral,
-                FontAttributes = FontAttributes.Bold,
-                Margin = 10,
-                HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.CenterAndExpand
-            };
-            winnersListButton.Clicked += WinnersListButton_Clicked;
-            themeButton.Clicked += ThemeButton_Clicked;
-            stackLayout.Children.Add(winnersListButton);
-            stackLayout.Children.Add(themeButton);
+                Button button = new Button 
+                {
+                    Text = buttonsText[i],
+                    FontSize = 16,
+                    WidthRequest = 200,
+                    HeightRequest = 100,
+                    BorderWidth = 3,
+                    CornerRadius = 8,
+                    BorderColor = Color.Black,
+                    FontAttributes = FontAttributes.Bold,
+                    Margin = 10,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                };
+                if (i == 1 && Preferences.Get("theme", "light") == "dark")
+                {
+                    button.BackgroundColor = Color.DarkGreen;
+                }
+                else if(i == 2 && Preferences.Get("bot", false))
+                {
+                    button.BackgroundColor = Color.DarkGreen;
+                }
+                else
+                {
+                    button.BackgroundColor = Color.Coral;
+                }
+                button.Clicked += Button_Clicked1;
+                stackLayout.Children.Add(button);
+            }         
 
             Content = stackLayout;
         }
 
-        private async void WinnersListButton_Clicked(object sender, EventArgs e)
+        private async void Button_Clicked1(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new Winners());
+            Button button = (Button)sender;
+
+            string currentTheme = Preferences.Get("theme", "light");
+            bool bot = Preferences.Get("bot", false);
+
+            if (button.Text == "Võitjate nimekiri")
+            {
+                await Navigation.PushModalAsync(new Winners());
+            }
+            else if (button.Text == "Muuda teemat")
+            {
+                if (currentTheme == "light")
+                {
+                    Preferences.Set("theme", "dark");
+                    button.BackgroundColor = Color.DarkGreen;
+                }
+                else
+                {
+                    Preferences.Set("theme", "light");
+                    button.BackgroundColor = Color.Coral;
+                }
+            }
+            else if (button.Text == "Botiga mängimine")
+            {
+                if (bot)
+                {
+                    Preferences.Set("bot", false);
+                    button.BackgroundColor = Color.Coral;
+                }
+                else
+                {
+                    Preferences.Set("bot", true);
+                    button.BackgroundColor = Color.DarkGreen;
+                }
+            }
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -98,18 +131,6 @@ namespace Trips_Traps_Trull
             await Navigation.PushModalAsync(new TicTacToe(button.TabIndex));
         }
 
-        private void ThemeButton_Clicked(object sender, EventArgs e)
-        {
-            string currentTheme = Preferences.Get("theme", "light");
-            if (currentTheme == "light")
-            {
-                Preferences.Set("theme", "dark");
-            }
-            else
-            {
-                Preferences.Set("theme", "light");
-            }
-        }
         
     }
 

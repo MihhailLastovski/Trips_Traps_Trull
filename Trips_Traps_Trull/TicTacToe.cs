@@ -15,7 +15,7 @@ namespace Trips_Traps_Trull
         Button buttonX;
         Button buttonO;
         bool isPlayerX = true;
-
+        bool bot = Preferences.Get("bot", false);
         public TicTacToe(int boardSize)
         {
             string currentTheme = Preferences.Get("theme", "light");
@@ -24,6 +24,8 @@ namespace Trips_Traps_Trull
             Grid grid = new Grid();
             TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
+            TapGestureRecognizer tapGestureRecognizerBot = new TapGestureRecognizer();
+            tapGestureRecognizerBot.Tapped += TapGestureRecognizer_TappedBot;
 
             buttonX = new Button
             {
@@ -78,8 +80,18 @@ namespace Trips_Traps_Trull
                         image.BackgroundColor = Color.DarkGray;
                         frame.BackgroundColor = Color.DarkGray;
                         buttonStack.BackgroundColor = Color.DarkGray;
+                        grid.BackgroundColor = Color.DarkGray;
+                        frame.BorderColor = Color.White;
                     }
-                    image.GestureRecognizers.Add(tapGestureRecognizer);
+                    if (bot)
+                    {
+                        image.GestureRecognizers.Add(tapGestureRecognizerBot);
+                    }
+                    else
+                    {
+                        image.GestureRecognizers.Add(tapGestureRecognizer);
+                    }
+                    
                     images.Add(image);
                     frame.Content = image;
                     grid.Children.Add(frame, i, y);
@@ -92,9 +104,55 @@ namespace Trips_Traps_Trull
         private void ButtonX_Clicked(object sender, EventArgs e) => isPlayerX = true;
         private void ButtonO_Clicked(object sender, EventArgs e) => isPlayerX = false;
 
+        private void TapGestureRecognizer_TappedBot(object sender, EventArgs e)
+        {
+            Image image = (Image)sender;
+            image.Source = "x.png";
+            image.TabIndex = 1;
+            for (int y = 0; y < elements.GetLength(0); y++)
+            {
+                for (int x = 0; x < elements.GetLength(0); x++)
+                {
+                    if (elements[y, x].image == image)
+                    {
+                        elements[y, x].value = 'x';
+                    }
+                }
+            }
+
+            List<Element> emptyCells = new List<Element>();
+            for (int y = 0; y < elements.GetLength(0); y++)
+            {
+                for (int x = 0; x < elements.GetLength(0); x++)
+                {
+                    if (elements[y, x].value == ' ')
+                    {
+                        emptyCells.Add(elements[y, x]);
+                    }
+                }
+            }
+
+            if (emptyCells.Count() > 0)
+            {
+                Random random = new Random();
+                int randomIndex = random.Next(emptyCells.Count);
+                Image emptyCellImage = emptyCells[randomIndex].image;
+                emptyCellImage.Source = "o.png";
+                emptyCellImage.TabIndex = 1;
+                emptyCells[randomIndex].value = '0';
+            }
+
+            buttonO.IsEnabled = false;
+            buttonX.IsEnabled = false;
+            CheckWinner('0');
+            CheckWinner('x');
+        }
+
+
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {           
             Image image = (Image)sender;
+
             if (isPlayerX && image.TabIndex != 1)
             {
                 image.Source = "x.png";
@@ -110,7 +168,7 @@ namespace Trips_Traps_Trull
                     }
                 }
                 isPlayerX = false;
-            }
+            }          
             else if (image.TabIndex != 1 && !isPlayerX)
             {
                 image.Source = "o.png";
@@ -132,6 +190,8 @@ namespace Trips_Traps_Trull
             CheckWinner('0');
             CheckWinner('x');
         }
+
+
 
         private async void CheckWinner(char symbol) 
         {
@@ -217,7 +277,7 @@ namespace Trips_Traps_Trull
         {
             string fileName = "Score";
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            DateTime dateTime= DateTime.Now;
+            string dateTime= DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
             if (File.Exists(Path.Combine(folderPath, fileName)))
             {
                 File.AppendAllText(Path.Combine(folderPath, fileName), $"Võitis: {symbol} | {dateTime} \n");
