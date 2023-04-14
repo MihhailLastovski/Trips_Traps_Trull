@@ -59,7 +59,7 @@ namespace Trips_Traps_Trull
                     Text = buttonsText[i],
                     FontSize = 16,
                     WidthRequest = 200,
-                    HeightRequest = 100,
+                    HeightRequest = 80,
                     BorderWidth = 3,
                     CornerRadius = 8,
                     BorderColor = Color.Black,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -131,6 +132,8 @@ namespace Trips_Traps_Trull
                     }
                 }
             }
+            CheckWinner('x');
+            CheckWinner('0');
 
             if (emptyCells.Count() > 0)
             {
@@ -141,11 +144,9 @@ namespace Trips_Traps_Trull
                 emptyCellImage.TabIndex = 1;
                 emptyCells[randomIndex].value = '0';
             }
-
+            
             buttonO.IsEnabled = false;
             buttonX.IsEnabled = false;
-            CheckWinner('0');
-            CheckWinner('x');
         }
 
 
@@ -219,6 +220,7 @@ namespace Trips_Traps_Trull
                     {
                         ResetGame();
                     }
+                    DisaableImage();
                 }
                 else if (horizontal.Count(f => (f == symbol)) == length && horizontal.Length == length)
                 {
@@ -229,6 +231,7 @@ namespace Trips_Traps_Trull
                     {
                         ResetGame();
                     }
+                    DisaableImage();
                 }
                 else if (diagonalLr.Count(f => (f == symbol)) == length && diagonalLr.Length == length)
                 {
@@ -239,6 +242,7 @@ namespace Trips_Traps_Trull
                     {
                         ResetGame();
                     }
+                    DisaableImage();
                 }
                 else if (diagonalRl.Count(f => (f == symbol)) == length && diagonalRl.Length == length)
                 {
@@ -249,7 +253,24 @@ namespace Trips_Traps_Trull
                     {
                         ResetGame();
                     }
+                    DisaableImage();
                 }
+            }
+        }
+
+        private void DisaableImage() 
+        {
+            foreach (var item in elements)
+            {
+                item.image.IsEnabled = false;
+            }
+        }
+
+        private void EnableImage() 
+        {
+            foreach (var item in elements)
+            {
+                item.image.IsEnabled = true;
             }
         }
 
@@ -268,6 +289,7 @@ namespace Trips_Traps_Trull
                     elements[y, x].value = ' ';
                 }
             }
+            EnableImage();
             isPlayerX = true;
             buttonO.IsEnabled = true;
             buttonX.IsEnabled = true;
